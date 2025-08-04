@@ -3,8 +3,10 @@ package com.example.Ecommerce.Controller;
 
 import com.example.Ecommerce.Model.Category;
 import com.example.Ecommerce.Model.Product;
+import com.example.Ecommerce.Model.UserDtls;
 import com.example.Ecommerce.Service.CategoryService;
 import com.example.Ecommerce.Service.ProductService;
+import com.example.Ecommerce.Service.UserService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -32,6 +35,20 @@ public class AdminController {
 
    @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void getUserDetails(Principal p, Model m) {
+        if (p != null) {
+            String email = p.getName();
+            UserDtls userDtls = userService.getUserByEmail(email);
+            m.addAttribute("user", userDtls);
+        }
+
+    }
+
 
     @GetMapping("/")
     public String index()
@@ -193,5 +210,27 @@ public class AdminController {
             }
         }
         return "redirect:/admin/editProduct/" + product.getId();
+    }
+@GetMapping("/users")
+    public  String getAllUser(Model m)
+    {
+        List<UserDtls> users= userService.getUers("ROLE_USER");
+            m.addAttribute("users",users);
+        return "/admin/users";
+    }
+
+    @GetMapping("/updateStatus")
+    public String updateAccountStatus(@RequestParam Boolean status,@RequestParam Integer id,HttpSession session)
+    {
+
+        Boolean f=userService.updateAccountStatus(id,status);
+        if(f)
+        {
+            session.setAttribute("succMsg","Account status Updated ");
+        }
+        else {
+            session.setAttribute("errorMsg","Something wrong on server");
+        }
+        return "redirect:/admin/users";
     }
 }
