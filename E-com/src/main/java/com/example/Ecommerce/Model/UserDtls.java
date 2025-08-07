@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +31,34 @@ public class UserDtls {
     private String password;
     private String profileImage;
     private String role;
+
+    private boolean accountNonLocked;
+    private Integer failedAttempt;
+    private Date lockTime;
+
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public Date getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(Date lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public Integer getFailedAttempt() {
+        return failedAttempt;
+    }
+
+    public void setFailedAttempt(Integer failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
 
     public String getAddress() {
         return address;
